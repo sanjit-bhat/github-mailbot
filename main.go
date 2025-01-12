@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/smtp"
 	"os"
+	"os/exec"
 	"time"
 )
 
@@ -59,8 +60,8 @@ Date: %s
 
 %s`
 
-func sendEmail() {
-	f, err := os.Open("/tmp/diff.html")
+func sendEmail(diffFile string) {
+	f, err := os.Open(diffFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +73,7 @@ func sendEmail() {
 	committer := "Sanjit Bhat"
 	from := "mit.pdos.mailbot@gmail.com"
 	to := "sanjit.bhat@gmail.com"
-	subj := "test email 3"
+	subj := "test email 4"
 	host := "smtp.gmail.com"
 	pswd := os.Getenv("MAILBOT_SECRET")
 
@@ -86,9 +87,31 @@ func sendEmail() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	os.Remove(diffFile)
+}
+
+var diffCmd = `git show --compact-summary --patch --format="" 560b72c | \
+	delta --no-gitconfig --light | \
+	aha > %s`
+
+func genDiff() string {
+	f, err := os.CreateTemp("", "*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fName := f.Name()
+
+	cmd := fmt.Sprintf(diffCmd, fName)
+	_, err = exec.Command("bash", "-c", cmd).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return fName
 }
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	sendEmail()
+	f := genDiff()
+	sendEmail(f)
 }
