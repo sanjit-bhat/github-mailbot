@@ -25,6 +25,7 @@ jobs:
     steps:
       - name: Setup Go
         uses: actions/setup-go@v5
+      - run: pwd
       - name: Run mailbot
         run: go run main.go
         working-directory: ./
