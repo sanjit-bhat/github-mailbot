@@ -28,10 +28,10 @@ jobs:
       - run: pwd
       - run: ls -l
       - run: go run main.go
-        working-directory: ./
         env:
           MAILBOT_HOST: ${{ inputs.host }}
           MAILBOT_PORT: ${{ inputs.port }}
           MAILBOT_FROM: ${{ inputs.from }}
           MAILBOT_TO: ${{ inputs.to }}
           MAILBOT_PASSWORD: ${{ secrets.password }}
+          MAILBOT_GH_EVENT: ${{ toJSON(github.event) }}

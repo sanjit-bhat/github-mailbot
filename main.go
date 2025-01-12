@@ -122,11 +122,13 @@ func main() {
 	from := os.Getenv("MAILBOT_FROM")
 	to := os.Getenv("MAILBOT_TO")
 	pswd := os.Getenv("MAILBOT_PASSWORD")
+	event := os.Getenv("MAILBOT_GH_EVENT")
 
 	log.Print(host)
 	log.Print(port)
 	log.Print(from)
 	log.Print(to)
+	log.Print(event)
 	if pswd == "" {
 		log.Print("empty pswd")
 	} else {
