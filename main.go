@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand/v2"
 	"net/smtp"
 	"os"
 	"os/exec"
@@ -50,15 +51,17 @@ func parseEnv() *GitHubEnv {
 	return e
 }
 
-var emailFmt = `Content-Transfer-Encoding: quoted-printable
-Content-Type: text/html; charset=UTF-8
-MIME-Version: 1.0
+var emailFmt = `Content-Type: text/html; charset=UTF-8
 From: %s <%s>
 To: %s
 Subject: %s
 Date: %s
 
 %s`
+
+func genTestSubj() string {
+	return fmt.Sprintf("test email %v", rand.IntN(10000))
+}
 
 func sendEmail(diffFile string) {
 	f, err := os.Open(diffFile)
@@ -73,7 +76,7 @@ func sendEmail(diffFile string) {
 	committer := "Sanjit Bhat"
 	from := "mit.pdos.mailbot@gmail.com"
 	to := "sanjit.bhat@gmail.com"
-	subj := "test email 4"
+	subj := genTestSubj()
 	host := "smtp.gmail.com"
 	pswd := os.Getenv("MAILBOT_SECRET")
 
@@ -91,7 +94,7 @@ func sendEmail(diffFile string) {
 	os.Remove(diffFile)
 }
 
-var diffCmd = `git show --compact-summary --patch --format="" 560b72c | \
+var diffFmt = `git show --compact-summary --patch --format="" 560b72c | \
 	delta --no-gitconfig --light | \
 	aha > %s`
 
@@ -102,8 +105,8 @@ func genDiff() string {
 	}
 	fName := f.Name()
 
-	cmd := fmt.Sprintf(diffCmd, fName)
-	_, err = exec.Command("bash", "-c", cmd).Output()
+	diff := fmt.Sprintf(diffFmt, fName)
+	_, err = exec.Command("bash", "-c", diff).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -112,6 +115,21 @@ func genDiff() string {
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	f := genDiff()
-	sendEmail(f)
+	// f := genDiff()
+	// sendEmail(f)
+	host := os.Getenv("MAILBOT_HOST")
+	port := os.Getenv("MAILBOT_PORT")
+	from := os.Getenv("MAILBOT_FROM")
+	to := os.Getenv("MAILBOT_TO")
+	pswd := os.Getenv("MAILBOT_PASSWORD")
+
+	log.Print(host)
+	log.Print(port)
+	log.Print(from)
+	log.Print(to)
+	if pswd == "" {
+		log.Print("empty pswd")
+	} else {
+		log.Print("non-empty pswd")
+	}
 }
