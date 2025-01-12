@@ -23,9 +23,11 @@ jobs:
   emailer:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup
+      - name: Setup Go
         uses: actions/setup-go@v5
-      - run: go run main.go
+      - name: Run mailbot
+        run: go run main.go
+        working-directory: ./
         env:
           MAILBOT_HOST: ${{ inputs.host }}
           MAILBOT_PORT: ${{ inputs.port }}
