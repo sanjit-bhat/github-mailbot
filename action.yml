@@ -1,0 +1,33 @@
+name: 'GitHub commit emailer'
+description: 'Send emails whenever a push event happens'
+
+inputs:
+  host:
+    required: true
+    type: string
+  port:
+    required: true
+    type: string
+  from:
+    required: true
+    type: string
+  to:
+    required: true
+    type: string
+  password:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: ls -l ${{ github.action_path }}
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+    - run: go run main.go
+      env:
+        MAILBOT_HOST: ${{ inputs.host }}
+        MAILBOT_PORT: ${{ inputs.port }}
+        MAILBOT_FROM: ${{ inputs.from }}
+        MAILBOT_TO: ${{ inputs.to }}
+        MAILBOT_PASSWORD: ${{ inputs.password }}
+        MAILBOT_GH_EVENT: ${{ toJSON(github.event) }}
