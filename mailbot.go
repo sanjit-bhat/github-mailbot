@@ -84,7 +84,7 @@ func unmarshalEvent(b []byte) *GitHubEvent {
 	return e
 }
 
-var diffFmt = `git show --compact-summary --patch --pretty=format:"%%h|%%B" %s | \
+const diffFmt = `git show --compact-summary --patch --pretty=format:"%%h|%%B" %s | \
 	delta --no-gitconfig --light | \
 	aha > %s`
 
@@ -103,7 +103,7 @@ func genDiff(commitId string) (fName string) {
 	return
 }
 
-var emailFmt = `Content-Type: text/html; charset=UTF-8
+const emailFmt = `Content-Type: text/html; charset=UTF-8
 From: %s <%s>
 To: %s
 Subject: %s
