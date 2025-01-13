@@ -84,7 +84,7 @@ func unmarshalEvent(b []byte) *GitHubEvent {
 	return e
 }
 
-var diffFmt = `git show --compact-summary --patch --format="%%h|%%B" %s | \
+var diffFmt = `git show --compact-summary --patch --pretty=format:"%%h|%%B" %s | \
 	delta --no-gitconfig --light | \
 	aha > %s`
 
