@@ -19,7 +19,7 @@ on:
       password:
         required: true
 
-runs:
+jobs:
   mailbot:
     runs-on: ubuntu-latest
     steps:
