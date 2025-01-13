@@ -121,7 +121,8 @@ func (cfg *EmailConfig) sendEmail(diffFile string, commit *CommitTy) {
 		log.Fatal(err)
 	}
 
-	subj := fmt.Sprintf("%s %s: %s", cfg.Repo, cfg.Branch, commit.Message)
+	msg, _, _ := strings.Cut(commit.Message, "\n")
+	subj := fmt.Sprintf("%s %s: %s", cfg.Repo, cfg.Branch, msg)
 	time := time.Now().Format(time.RFC1123Z)
 	email := fmt.Sprintf(emailFmt, commit.Author.Name, cfg.From, cfg.To, subj, time, html)
 
