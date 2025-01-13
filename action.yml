@@ -21,9 +21,11 @@ runs:
   using: "composite"
   steps:
     - run: ls -l ${{ github.action_path }}
+      shell: bash
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
     - run: go run main.go
+      shell: bash
       env:
         MAILBOT_HOST: ${{ inputs.host }}
         MAILBOT_PORT: ${{ inputs.port }}
