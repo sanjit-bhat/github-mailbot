@@ -24,10 +24,12 @@ runs:
       with:
         repository: 'theZiz/aha'
         ref: '5eaec96aae98274d1d86b431b9d426d50a023fbc'
+        path: './aha'
     - uses: actions/checkout@v4
       with:
         repository: 'dandavison/delta'
-        ref: 'v0.18.2'
+        ref: '0.18.2'
+        path: './delta'
     - run: make
       shell: bash
       working-directory: ./aha
