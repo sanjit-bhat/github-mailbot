@@ -14,9 +14,6 @@ inputs:
   to:
     required: true
     type: string
-  password:
-    required: true
-    type: string
 
 runs:
   using: 'composite'
@@ -38,5 +35,4 @@ runs:
         MAILBOT_PORT: ${{ inputs.port }}
         MAILBOT_FROM: ${{ inputs.from }}
         MAILBOT_TO: ${{ inputs.to }}
-        MAILBOT_PASSWORD: ${{ inputs.password }}
         MAILBOT_GH_EVENT: ${{ toJSON(github.event) }}
