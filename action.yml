@@ -24,7 +24,8 @@ runs:
       shell: bash
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
-      cache: false
+      with:
+        cache: false
     - run: go run main.go
       shell: bash
       env:
