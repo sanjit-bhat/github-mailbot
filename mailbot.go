@@ -52,6 +52,9 @@ func main() {
 	to := os.Getenv("MAILBOT_TO")
 	pswd := os.Getenv("MAILBOT_PASSWORD")
 	eventB := []byte(os.Getenv("MAILBOT_GH_EVENT"))
+	if len(pswd) == 0 {
+		log.Fatal("empty password. is the password configured correctly?")
+	}
 
 	event := unmarshalEvent(eventB)
 	config := &EmailConfig{
