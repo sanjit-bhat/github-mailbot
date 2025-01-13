@@ -20,7 +20,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    - run: echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bash_profile
       shell: bash
     - run: brew install aha git-delta
       shell: bash
