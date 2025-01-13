@@ -26,10 +26,14 @@ jobs:
       - run: echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
       - run: brew install aha git-delta
       - uses: actions/checkout@v4
+        with:
+          repository: 'sanjit-bhat/github-mailbot'
+          path: '../mailbot'
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           cache: false
-      - run: go build ${{ github.action_path }}/mailbot.go
+      - run: go build ../mailbot/mailbot.go
       - run: ./mailbot
         env:
           MAILBOT_HOST: ${{ inputs.host }}
