@@ -35,7 +35,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           cache: false
-      - name: Run mailbot
+      - run: go run ../mailbot/mailbot.go
+        working-directory: ./caller
         env:
           MAILBOT_HOST: ${{ inputs.host }}
           MAILBOT_PORT: ${{ inputs.port }}
@@ -43,7 +44,3 @@ jobs:
           MAILBOT_TO: ${{ inputs.to }}
           MAILBOT_PASSWORD: ${{ secrets.password }}
           MAILBOT_GH_EVENT: ${{ toJSON(github.event) }}
-        run: |
-          cd caller
-          go build ../mailbot/mailbot.go
-          ./mailbot
