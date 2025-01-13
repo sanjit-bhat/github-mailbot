@@ -1,3 +1,6 @@
 [submodule "aha"]
 	path = aha
 	url = git@github.com:theZiz/aha.git
+[submodule "delta"]
+	path = delta
+	url = git@github.com:dandavison/delta.git
