@@ -20,6 +20,8 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      shell: bash
     - run: brew install aha git-delta
       shell: bash
     - uses: actions/checkout@v4
