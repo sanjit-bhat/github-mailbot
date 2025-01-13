@@ -27,6 +27,7 @@ runs:
       with:
         cache: false
     - run: go build ${{ github.action_path }}/mailbot.go
+      shell: bash
     - run: ./mailbot
       shell: bash
       env:
