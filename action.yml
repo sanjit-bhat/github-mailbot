@@ -16,6 +16,7 @@ inputs:
     type: string
   password:
     required: true
+    type: string
 
 runs:
   using: 'composite'
