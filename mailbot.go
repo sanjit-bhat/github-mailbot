@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand/v2"
 	"net/smtp"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
-type GitHubEnv struct {
+type GitHubEvent struct {
 	Repository RepositoryTy
 	Ref        string
-	Commits    []CommitTy
+	Commits    []*CommitTy
 }
 
 type RepositoryTy struct {
@@ -33,22 +33,71 @@ type AuthorTy struct {
 	Name string
 }
 
-func parseEnv() *GitHubEnv {
-	f, err := os.Open("env.json")
+type EmailConfig struct {
+	Host     string
+	Port     string
+	From     string
+	To       string
+	Password string
+	Repo     string
+	Branch   string
+}
+
+func main() {
+	log.SetFlags(log.Lshortfile)
+
+	host := os.Getenv("MAILBOT_HOST")
+	port := os.Getenv("MAILBOT_PORT")
+	from := os.Getenv("MAILBOT_FROM")
+	to := os.Getenv("MAILBOT_TO")
+	pswd := os.Getenv("MAILBOT_PASSWORD")
+	eventB := []byte(os.Getenv("MAILBOT_GH_EVENT"))
+
+	event := unmarshalEvent(eventB)
+	config := &EmailConfig{
+		Host:     host,
+		Port:     port,
+		From:     from,
+		To:       to,
+		Password: pswd,
+		Repo:     event.Repository.FullName,
+		Branch:   event.Ref,
+	}
+	for _, c := range event.Commits {
+		f := genDiff(c.Id)
+		config.sendEmail(f, c)
+	}
+}
+
+func unmarshalEvent(b []byte) *GitHubEvent {
+	e := &GitHubEvent{}
+	err := json.Unmarshal([]byte(b), e)
 	if err != nil {
 		log.Fatal(err)
 	}
-	b, err := io.ReadAll(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-	e := &GitHubEnv{}
-	err = json.Unmarshal(b, e)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("%+v", e)
+	// example ref: "refs/heads/main".
+	sp := strings.Split(e.Ref, "/")
+	e.Ref = sp[len(sp)-1]
 	return e
+}
+
+var diffFmt = `git show --compact-summary --patch --format="" %s | \
+	delta --no-gitconfig --light | \
+	aha > %s`
+
+func genDiff(commitId string) (fName string) {
+	f, err := os.CreateTemp("", "*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fName = f.Name()
+
+	diff := fmt.Sprintf(diffFmt, commitId, fName)
+	_, err = exec.Command("bash", "-c", diff).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
 }
 
 var emailFmt = `Content-Type: text/html; charset=UTF-8
@@ -59,79 +108,27 @@ Date: %s
 
 %s`
 
-func genTestSubj() string {
-	return fmt.Sprintf("test email %v", rand.IntN(10000))
-}
-
-func sendEmail(diffFile string) {
+func (cfg *EmailConfig) sendEmail(diffFile string, commit *CommitTy) {
 	f, err := os.Open(diffFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	b, err := io.ReadAll(f)
+	html, err := io.ReadAll(f)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	committer := "Sanjit Bhat"
-	from := "mit.pdos.mailbot@gmail.com"
-	to := "sanjit.bhat@gmail.com"
-	subj := genTestSubj()
-	host := "smtp.gmail.com"
-	pswd := os.Getenv("MAILBOT_SECRET")
-
+	subj := fmt.Sprintf("%s %s: %s", cfg.Repo, cfg.Branch, commit.Message)
 	time := time.Now().Format(time.RFC1123Z)
-	email := fmt.Sprintf(emailFmt, committer, from, to, subj, time, b)
-	log.Print(email)
+	email := fmt.Sprintf(emailFmt, commit.Author.Name, cfg.From, cfg.To, subj, time, html)
 
-	auth := smtp.PlainAuth("", from, pswd, host)
-	_ = auth
-	err = smtp.SendMail("smtp.gmail.com:587", auth, from, []string{to}, []byte(email))
+	addr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
+	auth := smtp.PlainAuth("", cfg.From, cfg.Password, cfg.Host)
+	toSplit := strings.Split(cfg.To, ",")
+	err = smtp.SendMail(addr, auth, cfg.From, toSplit, []byte(email))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	os.Remove(diffFile)
-}
-
-var diffFmt = `git show --compact-summary --patch --format="" 560b72c | \
-	delta --no-gitconfig --light | \
-	aha > %s`
-
-func genDiff() string {
-	f, err := os.CreateTemp("", "*.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fName := f.Name()
-
-	diff := fmt.Sprintf(diffFmt, fName)
-	_, err = exec.Command("bash", "-c", diff).Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return fName
-}
-
-func main() {
-	log.SetFlags(log.Lshortfile)
-	// f := genDiff()
-	// sendEmail(f)
-	host := os.Getenv("MAILBOT_HOST")
-	port := os.Getenv("MAILBOT_PORT")
-	from := os.Getenv("MAILBOT_FROM")
-	to := os.Getenv("MAILBOT_TO")
-	pswd := os.Getenv("MAILBOT_PASSWORD")
-	event := os.Getenv("MAILBOT_GH_EVENT")
-	_ = event
-
-	log.Print(host)
-	log.Print(port)
-	log.Print(from)
-	log.Print(to)
-	if pswd == "" {
-		log.Print("empty pswd")
-	} else {
-		log.Print("non-empty pswd")
-	}
 }
