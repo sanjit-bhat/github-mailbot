@@ -6,6 +6,11 @@ TODO:
 1. Delta doesn't have Rocq file support. It thinks it's Verilog.
 Perhaps we can extend it to work or use some other syntax highlighting differ.
 Or just remove syntax highlighting, although it's very useful.
+Note that Delta uses Bat under the hood for syntax highlighting.
+Bat allows extending syntax highlighting with Sublime syntax files.
+There are already a couple of those for Rocq.
+1. Prevent merges from main into a branch from triggering emails.
+All those commits have already gotten emails.
 1. Find out how to get rid of "---" in `git show` output.
 1. Document how to use this.
 1. Add email screenshots.
