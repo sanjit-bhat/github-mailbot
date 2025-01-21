@@ -9,7 +9,7 @@ Or just remove syntax highlighting, although it's very useful.
 Note that Delta uses Bat under the hood for syntax highlighting.
 Bat allows extending syntax highlighting with Sublime syntax files.
 There are already a couple of those for Rocq.
-1. Prevent merges from main into a branch from triggering emails.
+1. Prevent merges / rebases from triggering emails.
 All those commits have already gotten emails.
 1. Find out how to get rid of "---" in `git show` output.
 1. Document how to use this.
@@ -20,3 +20,4 @@ All those commits have already gotten emails.
 1. Cache at least specific versions of the brew pkgs.
 1. Delta removes color in the `git show` header.
 Maybe we can only pipe the diff part to delta.
+1. Set email time to the commit time.
