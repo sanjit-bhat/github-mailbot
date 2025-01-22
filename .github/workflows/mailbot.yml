@@ -32,7 +32,6 @@ jobs:
           mkdir -p "$(bat --config-dir)/syntaxes"
           git clone --depth=1 https://github.com/whitequark/Sublime-Coq.git "$(bat --config-dir)/syntaxes/Sublime-Coq"
           bat cache --build
-          bat --list-languages
       - uses: actions/checkout@v4
         with:
           repository: 'sanjit-bhat/github-mailbot'
