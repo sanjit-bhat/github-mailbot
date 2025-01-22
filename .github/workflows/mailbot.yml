@@ -25,14 +25,14 @@ jobs:
     steps:
       - name: Add CLI deps
         run: |
-        echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
-        brew install git-delta bat aha
+          echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+          brew install git-delta bat aha
       - name: Add Rocq syntax highlighting
         run: |
-        mkdir -p "$(bat --config-dir)/syntaxes"
-        git clone --depth=1 https://github.com/whitequark/Sublime-Coq.git "$(bat --config-dir)/syntaxes/Sublime-Coq"
-        bat cache --build
-        bat --list-languages
+          mkdir -p "$(bat --config-dir)/syntaxes"
+          git clone --depth=1 https://github.com/whitequark/Sublime-Coq.git "$(bat --config-dir)/syntaxes/Sublime-Coq"
+          bat cache --build
+          bat --list-languages
       - uses: actions/checkout@v4
         with:
           repository: 'sanjit-bhat/github-mailbot'
