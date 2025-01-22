@@ -19,7 +19,7 @@ type GitHubEvent struct {
 }
 
 type RepositoryTy struct {
-	FullName string `json:"full_name"`
+	Name string
 }
 
 type CommitTy struct {
@@ -63,7 +63,7 @@ func main() {
 		From:     from,
 		To:       to,
 		Password: pswd,
-		Repo:     event.Repository.FullName,
+		Repo:     event.Repository.Name,
 		Branch:   event.Ref,
 	}
 	for _, c := range event.Commits {
