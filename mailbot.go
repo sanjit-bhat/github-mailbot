@@ -23,10 +23,11 @@ type RepositoryTy struct {
 }
 
 type CommitTy struct {
-	Author  AuthorTy
-	Id      string
-	Message string
-	Url     string
+	Author   AuthorTy
+	Distinct bool
+	Id       string
+	Message  string
+	Url      string
 }
 
 type AuthorTy struct {
@@ -67,8 +68,10 @@ func main() {
 		Branch:   event.Ref,
 	}
 	for _, c := range event.Commits {
-		f := genDiff(c.Id)
-		config.sendEmail(f, c)
+		if c.Distinct {
+			f := genDiff(c.Id)
+			config.sendEmail(f, c)
+		}
 	}
 }
 

@@ -3,8 +3,6 @@
 Reusable GitHub Action for sending an email everytime someone pushes to a repo.
 
 TODO:
-1. Prevent merges / rebases from triggering emails.
-All those commits have already gotten emails.
 1. Find out how to get rid of "---" in `git show` output.
 1. Document how to use this.
 1. Add email screenshots.
