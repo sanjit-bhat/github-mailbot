@@ -16,8 +16,10 @@ on:
         required: true
         type: string
       mailbot_repo:
-        required: true
+        description: 'For testing mailbot forks. Controls the mailbot clone repo'
+        required: false
         type: string
+        default: 'sanjit-bhat/github-mailbot'
     secrets:
       password:
         required: true
