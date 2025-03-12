@@ -15,6 +15,11 @@ on:
       to:
         required: true
         type: string
+      mailbot_repo:
+        description: 'For testing mailbot forks. Controls the mailbot clone repo'
+        required: false
+        type: string
+        default: 'sanjit-bhat/github-mailbot'
     secrets:
       password:
         required: true
@@ -34,7 +39,7 @@ jobs:
           bat cache --build
       - uses: actions/checkout@v4
         with:
-          repository: 'sanjit-bhat/github-mailbot'
+          repository: ${{ inputs.mailbot_repo }}
           path: './mailbot'
       - uses: actions/checkout@v4
         with:
