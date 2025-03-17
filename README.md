@@ -13,3 +13,8 @@ TODO:
 1. Delta removes color in the `git show` header.
 Maybe we can only pipe the diff part to delta.
 1. Set email time to the commit time.
+1. Document testing process.
+E2E testing on forked mailbot can use `mailbot_repo` flag.
+1. Document looking at GH action output log to see GH env json, which is
+passed to Go mailbot script and contains information that can be useful
+for debugging mailbot behavior and adding features.
