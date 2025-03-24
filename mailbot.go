@@ -31,7 +31,8 @@ type CommitTy struct {
 }
 
 type AuthorTy struct {
-	Name string
+	Name  string
+	Email string
 }
 
 type EmailConfig struct {
@@ -109,6 +110,7 @@ func genDiff(commitId string) (fName string) {
 const emailFmt = `Content-Type: text/html; charset=UTF-8
 From: %s <%s>
 To: %s
+Reply-To: %s <%s>
 Subject: %s
 Date: %s
 
@@ -127,7 +129,11 @@ func (cfg *EmailConfig) sendEmail(diffFile string, commit *CommitTy) {
 	msg, _, _ := strings.Cut(commit.Message, "\n")
 	subj := fmt.Sprintf("%s %s: %s", cfg.Repo, cfg.Branch, msg)
 	time := time.Now().Format(time.RFC1123Z)
-	email := fmt.Sprintf(emailFmt, commit.Author.Name, cfg.From, cfg.To, subj, time, html)
+	email := fmt.Sprintf(emailFmt,
+		commit.Author.Name, cfg.From, cfg.To,
+		commit.Author.Name, commit.Author.Email,
+		subj, time, html,
+	)
 
 	addr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 	auth := smtp.PlainAuth("", cfg.From, cfg.Password, cfg.Host)
