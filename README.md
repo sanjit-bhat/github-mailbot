@@ -18,3 +18,6 @@ E2E testing on forked mailbot can use `mailbot_repo` flag.
 1. Document looking at GH action output log to see GH env json, which is
 passed to Go mailbot script and contains information that can be useful
 for debugging mailbot behavior and adding features.
+1. Don't run the mailbot workflow unless it can access the secret.
+E.g., dependabot PRs can't access the secret, so either they need
+to be given access, or the workflow should not run.
