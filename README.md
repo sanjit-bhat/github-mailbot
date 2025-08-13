@@ -6,7 +6,7 @@ GitHub provides commit emails for PRs only, but those don't include the diff.
 
 ## Example workflow file
 
-```
+```yaml
 name: Commit mailbot
 on: push
 
