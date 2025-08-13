@@ -1,8 +1,36 @@
 # GitHub Mailbot
 
-Reusable GitHub Action for sending an email everytime someone pushes to a repo.
+[Reusable GitHub Action](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)
+for sending a commit email with the git diff everytime someone pushes to a branch.
+GitHub provides commit emails for PRs only, but those don't include the diff.
 
-TODO:
+## Example workflow file
+
+```
+name: Commit mailbot
+on: push
+
+jobs:
+  mailbot:
+    if: github.actor != 'dependabot[bot]'
+    uses: sanjit-bhat/github-mailbot/.github/workflows/mailbot.yml@main
+    with:
+      host: smtp.gmail.com
+      port: 587
+      from: alice@gmail.com
+      to: bob@gmail.com,charlie@gmail.com
+    secrets:
+      password: ${{ secrets.MAILBOT_PASSWORD }}
+```
+
+This assumes a
+[GitHub secret](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)
+called `MAILBOT_PASSWORD` with the SMTP password for `alice@gmail.com`.
+It doesn't run on commits from `dependabot[bot]` since those
+don't have secret access, resulting in a mailbot error.
+
+## TODO
+
 1. Find out how to get rid of "---" in `git show` output.
 1. Document how to use this.
 1. Add email screenshots.
