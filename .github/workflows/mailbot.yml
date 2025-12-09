@@ -48,7 +48,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           cache: false
-      - run: go run ../mailbot/mailbot.go
+      - run: go install mailbot.go
+        working-directory: ./mailbot
+      - run: mailbot
         working-directory: ./caller
         env:
           MAILBOT_HOST: ${{ inputs.host }}
