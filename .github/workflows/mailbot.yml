@@ -20,6 +20,11 @@ on:
         required: false
         type: string
         default: 'sanjit-bhat/github-mailbot'
+      mailbot_ref:
+        description: 'For testing mailbot forks. Controls the branch of the cloned mailbot repo'
+        required: false
+        type: string
+        default: ''
     secrets:
       password:
         required: true
@@ -40,6 +45,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: ${{ inputs.mailbot_repo }}
+          ref : ${{ inputs.mailbot_ref }}
           path: './mailbot'
       - uses: actions/checkout@v5
         with:
