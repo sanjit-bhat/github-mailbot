@@ -42,12 +42,12 @@ jobs:
           mkdir -p "$(bat --config-dir)/syntaxes"
           git clone --depth=1 https://github.com/whitequark/Sublime-Coq.git "$(bat --config-dir)/syntaxes/Sublime-Coq"
           bat cache --build
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           repository: ${{ inputs.mailbot_repo }}
           ref : ${{ inputs.mailbot_ref }}
           path: './mailbot'
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: './caller'
           fetch-depth: 0
